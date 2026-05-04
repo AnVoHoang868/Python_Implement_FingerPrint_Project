@@ -41,6 +41,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import time
+from scipy.spatial import cKDTree
 
 # ============================================================================
 # CẤU HÌNH
@@ -65,6 +66,7 @@ def _import_module(name, filepath):
 
 step03 = _import_module("s03", os.path.join(BASE_DIR, "03_enhancement.py"))
 step04 = _import_module("s04", os.path.join(BASE_DIR, "04_orientation_field.py"))
+step04b = _import_module("s04b", os.path.join(BASE_DIR, "04b_singular_points.py"))
 step05 = _import_module("s05", os.path.join(BASE_DIR, "05_frequency_estimation.py"))
 step06 = _import_module("s06", os.path.join(BASE_DIR, "06_gabor_filter.py"))
 step07 = _import_module("s07", os.path.join(BASE_DIR, "07_binarize_thin.py"))
@@ -76,16 +78,17 @@ step08 = _import_module("s08", os.path.join(BASE_DIR, "08_minutiae_extraction.py
 # ============================================================================
 def extract_features(img_path):
     """
-    Chạy toàn bộ pipeline từ ảnh gốc → minutiae.
+    Chạy toàn bộ pipeline từ ảnh gốc → minutiae + level1 features.
     Tương đương: ext_finger(img) trong MATLAB.
 
     Returns:
-      minutiae: Array [x, y, type, angle] hoặc None nếu lỗi
-      img:      Ảnh gốc grayscale
+      minutiae:       Array [x, y, type, angle] hoặc None nếu lỗi
+      level1_features: dict chứa pattern_class, cores, deltas (hoặc None)
+      img:            Ảnh gốc grayscale
     """
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        return None, None
+        return None, None, None
 
     # Enhancement
     enhanced, mask, _ = step03.full_enhancement_pipeline(
@@ -95,6 +98,9 @@ def extract_features(img_path):
 
     # Orientation
     orient_img, reliability = step04.estimate_orientation(enhanced)
+
+    # ====== Level 1: Singular Points & Pattern Classification ======
+    level1_features = step04b.extract_level1_features(orient_img, mask, block_size=8)
 
     # Frequency
     freq_img, median_freq = step05.ridge_frequency(
@@ -115,12 +121,12 @@ def extract_features(img_path):
     thinned = step07.thin_fingerprint(binary, mask)
     thinned = step07.clean_thinned_image(thinned, mask)
 
-    # Minutiae
+    # Minutiae (Level 2)
     cn_map = step08.compute_crossing_number(thinned)
     minutiae_raw = step08.extract_minutiae(thinned, cn_map, orient_img, mask)
     minutiae = step08.remove_false_minutiae(minutiae_raw, mask, dist_threshold=10)
 
-    return minutiae, img
+    return minutiae, level1_features, img
 
 
 # ============================================================================
@@ -324,6 +330,151 @@ def match_fingerprints(M1, M2, alpha_range=5):
                     best_alpha = a
 
     return best_score, best_i, best_j, best_alpha
+
+
+# ============================================================================
+# BƯỚC 8E: MATCH BẰNG NUMPY (Tối ưu hóa)
+# ============================================================================
+def compute_score_fast(T1, T2, dist_threshold=15, angle_threshold=14):
+    """
+    Tính điểm tương đồng bằng Numpy Broadcasting thay vì vòng lặp lồng nhau.
+    Tốc độ cực nhanh và không cần cài thêm thư viện Scipy.
+    """
+    n1 = len(T1)
+    n2 = len(T2)
+
+    if n1 == 0 or n2 == 0:
+        return 0.0
+
+    # Tính ma trận khoảng cách Euclid (n1, n2)
+    diff = T1[:, np.newaxis, :2] - T2[np.newaxis, :, :2]
+    dist_matrix = np.sqrt(np.sum(diff**2, axis=-1))
+
+    # Tính chênh lệch góc (n1, n2)
+    theta_diff = np.abs(T1[:, np.newaxis, 2] - T2[np.newaxis, :, 2]) * 180 / np.pi
+    theta_diff = np.minimum(theta_diff, 360 - theta_diff)
+
+    # Điều kiện khớp: khoảng cách < 15 VÀ góc < 14
+    valid_pairs = (dist_matrix < dist_threshold) & (theta_diff < angle_threshold)
+
+    # Mỗi minutia trong T1 chỉ được tính khớp tối đa 1 lần
+    # Tương đương vòng lặp for i, for j ... break
+    matched = np.sum(np.any(valid_pairs, axis=1))
+
+    score = np.sqrt(matched ** 2 / (n1 * n2))
+    return score
+
+def match_fingerprints_fast(M1, M2, alpha_range=5):
+    """
+    Tương tự match_fingerprints nhưng gọi compute_score_fast để tăng tốc độ.
+    """
+    if len(M1) == 0 or len(M2) == 0:
+        return 0.0, -1, -1, 0
+
+    # Chỉ giữ minutiae loại Termination (1) và Bifurcation (3)
+    M1 = M1[M1[:, 2] < 5]
+    M2 = M2[M2[:, 2] < 5]
+
+    n1 = len(M1)
+    n2 = len(M2)
+
+    best_score = 0.0
+    best_i = 0
+    best_j = 0
+    best_alpha = 0
+
+    for i in range(n1):
+        T1 = transform_minutiae(M1, i)
+        for j in range(n2):
+            if M1[i, 2] != M2[j, 2]:
+                continue
+
+            T2 = transform_minutiae(M2, j)
+
+            for a in range(-alpha_range, alpha_range + 1):
+                alpha = a * np.pi / 180
+                T3 = transform2_minutiae(T2, alpha)
+                sm = compute_score_fast(T1, T3)
+
+                if sm > best_score:
+                    best_score = sm
+                    best_i = i
+                    best_j = j
+                    best_alpha = a
+
+    return best_score, best_i, best_j, best_alpha
+
+
+def compute_score_kdtree(T1, T2, dist_threshold=15, angle_threshold=14):
+    """
+    Tính điểm tương đồng sử dụng KD-Tree để tìm kiếm điểm lân cận siêu tốc.
+    """
+    n1 = len(T1)
+    n2 = len(T2)
+    
+    if n1 == 0 or n2 == 0:
+        return 0.0
+
+    # Build KD-Tree trên tọa độ (x, y) của T2
+    tree = cKDTree(T2[:, :2])
+    
+    matched = 0
+    # Query tất cả điểm T1 trong bán kính dist_threshold
+    idx_list = tree.query_ball_point(T1[:, :2], r=dist_threshold)
+    
+    for i, neighbors in enumerate(idx_list):
+        for j in neighbors:
+            # Kiểm tra chênh lệch góc
+            d_theta = abs(T1[i, 2] - T2[j, 2]) * 180 / np.pi
+            d_theta = min(d_theta, 360 - d_theta)
+            
+            if d_theta < angle_threshold:
+                matched += 1
+                break  # Khớp 1 lần là đủ
+                
+    score = np.sqrt(matched ** 2 / (n1 * n2))
+    return score
+
+def match_fingerprints_kdtree(M1, M2, alpha_range=5):
+    """
+    Tương tự match_fingerprints nhưng gọi compute_score_kdtree (O(N log N)).
+    Phù hợp khi số lượng minutiae lớn và scipy được cài đặt.
+    """
+    if len(M1) == 0 or len(M2) == 0:
+        return 0.0, -1, -1, 0
+
+    M1 = M1[M1[:, 2] < 5]
+    M2 = M2[M2[:, 2] < 5]
+
+    n1 = len(M1)
+    n2 = len(M2)
+
+    best_score = 0.0
+    best_i = 0
+    best_j = 0
+    best_alpha = 0
+
+    for i in range(n1):
+        T1 = transform_minutiae(M1, i)
+        for j in range(n2):
+            if M1[i, 2] != M2[j, 2]:
+                continue
+
+            T2 = transform_minutiae(M2, j)
+
+            for a in range(-alpha_range, alpha_range + 1):
+                alpha = a * np.pi / 180
+                T3 = transform2_minutiae(T2, alpha)
+                sm = compute_score_kdtree(T1, T3)
+
+                if sm > best_score:
+                    best_score = sm
+                    best_i = i
+                    best_j = j
+                    best_alpha = a
+
+    return best_score, best_i, best_j, best_alpha
+
 
 
 # ============================================================================

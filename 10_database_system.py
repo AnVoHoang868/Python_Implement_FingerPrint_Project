@@ -120,12 +120,17 @@ class FingerprintDatabase:
             )
         """)
 
-        # Bảng Fingerprint_Templates: Dữ liệu sinh trắc
+        # Bảng Fingerprint_Templates: Dữ liệu sinh trắc (Level 1 + Level 2)
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Fingerprint_Templates (
                 template_id     INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id         INTEGER NOT NULL,
                 finger_index    TEXT DEFAULT 'unknown',
+                pattern_class   TEXT DEFAULT 'Unknown',
+                core_x          INTEGER DEFAULT -1,
+                core_y          INTEGER DEFAULT -1,
+                delta_x         INTEGER DEFAULT -1,
+                delta_y         INTEGER DEFAULT -1,
                 minutiae_data   TEXT NOT NULL,
                 minutiae_count  INTEGER NOT NULL,
                 source_image    TEXT,
@@ -158,12 +163,12 @@ class FingerprintDatabase:
         return user_id
 
     def enroll_fingerprint(self, user_id, minutiae, finger_index="unknown",
-                           source_image=""):
+                           source_image="", level1_features=None):
         """
         Đăng ký vân tay: Chuyển minutiae thành JSON → INSERT vào DB.
 
         Pha Enrollment:
-          1. Ảnh vân tay → Pipeline trích xuất → minutiae array
+          1. Ảnh vân tay → Pipeline trích xuất → minutiae array + level1
           2. Chuyển minutiae array → JSON string
           3. INSERT INTO Fingerprint_Templates (...)
 
@@ -171,10 +176,11 @@ class FingerprintDatabase:
           [{"x": 120, "y": 95, "type": 1, "angle": 1.5708}, ...]
 
         Tham số:
-          user_id:      ID người dùng (Foreign Key → Users)
-          minutiae:     Numpy array [x, y, type, angle] từ pipeline
-          finger_index: Tên ngón tay (e.g. "right_thumb")
-          source_image: Đường dẫn ảnh gốc (để tham chiếu)
+          user_id:         ID người dùng (Foreign Key → Users)
+          minutiae:        Numpy array [x, y, type, angle] từ pipeline
+          finger_index:    Tên ngón tay (e.g. "right_thumb")
+          source_image:    Đường dẫn ảnh gốc (để tham chiếu)
+          level1_features: dict chứa pattern_class, cores, deltas (từ 04b)
         """
         # Chuyển numpy array → list of dicts → JSON string
         minutiae_list = []
@@ -189,16 +195,35 @@ class FingerprintDatabase:
         json_data = json.dumps(minutiae_list)
         count = len(minutiae_list)
 
+        # Xử lý Level 1 features
+        pattern_class = "Unknown"
+        core_x, core_y = -1, -1
+        delta_x, delta_y = -1, -1
+
+        if level1_features is not None:
+            pattern_class = level1_features.get("pattern_class", "Unknown")
+            cores = level1_features.get("cores", [])
+            deltas = level1_features.get("deltas", [])
+            if cores:
+                core_x, core_y = int(cores[0][0]), int(cores[0][1])
+            if deltas:
+                delta_x, delta_y = int(deltas[0][0]), int(deltas[0][1])
+
         self.cursor.execute("""
             INSERT INTO Fingerprint_Templates
-                (user_id, finger_index, minutiae_data, minutiae_count, source_image)
-            VALUES (?, ?, ?, ?, ?)
-        """, (user_id, finger_index, json_data, count, source_image))
+                (user_id, finger_index, pattern_class,
+                 core_x, core_y, delta_x, delta_y,
+                 minutiae_data, minutiae_count, source_image)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (user_id, finger_index, pattern_class,
+              core_x, core_y, delta_x, delta_y,
+              json_data, count, source_image))
 
         self.conn.commit()
         template_id = self.cursor.lastrowid
         print(f"  [INSERT] Template ID={template_id}: "
               f"User={user_id}, Finger={finger_index}, "
+              f"Pattern={pattern_class}, "
               f"Minutiae={count}, Image={os.path.basename(source_image)}")
         return template_id
 
@@ -219,6 +244,11 @@ class FingerprintDatabase:
                 u.name,
                 u.role,
                 ft.finger_index,
+                ft.pattern_class,
+                ft.core_x,
+                ft.core_y,
+                ft.delta_x,
+                ft.delta_y,
                 ft.minutiae_data,
                 ft.minutiae_count,
                 ft.source_image
@@ -241,6 +271,11 @@ class FingerprintDatabase:
                 "name": row["name"],
                 "role": row["role"],
                 "finger_index": row["finger_index"],
+                "pattern_class": row["pattern_class"],
+                "core_x": row["core_x"],
+                "core_y": row["core_y"],
+                "delta_x": row["delta_x"],
+                "delta_y": row["delta_y"],
                 "minutiae": minutiae_array,
                 "minutiae_count": row["minutiae_count"],
                 "source_image": row["source_image"],

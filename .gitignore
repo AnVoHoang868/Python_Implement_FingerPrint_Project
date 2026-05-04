@@ -22,3 +22,12 @@ output/
 *.jpeg
 *.tif
 *.tiff
+
+# ============================================
+# DỮ LIỆU VÂN TAY (Dung lượng quá lớn)
+# ============================================
+# Thư mục chứa bộ dữ liệu SOCOFing (~440MB giải nén)
+DataFingerPrint/
+
+# File nén bộ dữ liệu (~440MB)
+DataFingerPrint.zip

@@ -41,7 +41,6 @@ Lọc Minutiae giả (False Minutiae Removal):
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
 import os
 
 # ============================================================================
@@ -214,7 +213,8 @@ def remove_false_minutiae(minutiae, mask, dist_threshold=10):
 
     # --- Bộ lọc 2: Khoảng cách ---
     coords = minutiae[:, :2].astype(np.float64)  # [x, y]
-    dist_matrix = cdist(coords, coords, metric='euclidean')
+    diff = coords[:, np.newaxis, :] - coords[np.newaxis, :, :]
+    dist_matrix = np.sqrt(np.sum(diff**2, axis=-1))
 
     # Đánh dấu minutiae cần loại bỏ
     to_remove = set()
