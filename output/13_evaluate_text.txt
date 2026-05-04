@@ -1,0 +1,11 @@
+========================================
+ KẾT QUẢ ĐÁNH GIÁ RETRIEVAL 1:N
+========================================
+Tổng số ảnh truy vấn : 100
+Rank-1 Accuracy      : 1.00% (Tỷ lệ tìm trúng đích ngay kết quả số 1)
+Rank-5 Accuracy      : 4.00% (Tỷ lệ chủ nhân nằm trong Top 5)
+========================================
+Đã lưu biểu đồ: C:\Users\Admin\Desktop\Python_Implements\Python_Implement_FingerPrint_Project\output\13_cmc_curve.png
+
+Thời gian chạy: 841.8s (Trung bình 8.4s / ảnh)
+  Đã đóng kết nối database.

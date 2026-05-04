@@ -255,6 +255,10 @@ def compute_score(T1, T2, dist_threshold=15, angle_threshold=14):
             dist = np.sqrt(dx ** 2 + dy ** 2)
 
             if dist < dist_threshold:
+                # Kiểm tra TRÙNG LOẠI ĐẶC TRƯNG (Termination vs Bifurcation)
+                if T1[i, 3] != T2[j, 3]:
+                    continue
+
                 # Chênh lệch góc (xử lý wraparound)
                 d_theta = abs(T1[i, 2] - T2[j, 2]) * 180 / np.pi
                 d_theta = min(d_theta, 360 - d_theta)
@@ -354,8 +358,11 @@ def compute_score_fast(T1, T2, dist_threshold=15, angle_threshold=14):
     theta_diff = np.abs(T1[:, np.newaxis, 2] - T2[np.newaxis, :, 2]) * 180 / np.pi
     theta_diff = np.minimum(theta_diff, 360 - theta_diff)
 
-    # Điều kiện khớp: khoảng cách < 15 VÀ góc < 14
-    valid_pairs = (dist_matrix < dist_threshold) & (theta_diff < angle_threshold)
+    # Kiểm tra trùng loại đặc trưng (type) (n1, n2)
+    type_match = T1[:, np.newaxis, 3] == T2[np.newaxis, :, 3]
+
+    # Điều kiện khớp: khoảng cách < 15 VÀ góc < 14 VÀ cùng loại Minutiae
+    valid_pairs = (dist_matrix < dist_threshold) & (theta_diff < angle_threshold) & type_match
 
     # Mỗi minutia trong T1 chỉ được tính khớp tối đa 1 lần
     # Tương đương vòng lặp for i, for j ... break
@@ -424,6 +431,10 @@ def compute_score_kdtree(T1, T2, dist_threshold=15, angle_threshold=14):
     
     for i, neighbors in enumerate(idx_list):
         for j in neighbors:
+            # Kiểm tra TRÙNG LOẠI ĐẶC TRƯNG
+            if T1[i, 3] != T2[j, 3]:
+                continue
+
             # Kiểm tra chênh lệch góc
             d_theta = abs(T1[i, 2] - T2[j, 2]) * 180 / np.pi
             d_theta = min(d_theta, 360 - d_theta)

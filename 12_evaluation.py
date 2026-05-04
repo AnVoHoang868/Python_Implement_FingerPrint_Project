@@ -14,6 +14,7 @@ Chiến lược tạo cặp:
 """
 
 import os
+import sys
 import re
 import glob
 import json
@@ -24,6 +25,9 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from datetime import datetime
 
+# Fix encoding cho Windows console (tiếng Việt)
+sys.stdout.reconfigure(encoding='utf-8')
+
 # ============================================================================
 # CẤU HÌNH
 # ============================================================================
@@ -33,12 +37,6 @@ DATASET_ALTERED_DIR = os.path.join(BASE_DIR, "DataFingerPrint", "fingerPrint", "
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Số cặp đánh giá (tăng để chính xác hơn, giảm để chạy nhanh hơn)
-NUM_GENUINE_PAIRS = 100
-NUM_IMPOSTOR_PAIRS = 100
-
-# Các ID có ảnh bất thường (bỏ qua)
-ABNORMAL_IDS = {"53", "226", "270", "297", "303", "349", "354", "361", "363", "376", "560", "585", "590"}
 
 # ============================================================================
 # IMPORT
@@ -51,6 +49,7 @@ def _import_module(name, filepath):
     spec.loader.exec_module(mod)
     return mod
 
+# Import module Minutiae matching (workflow của nhánh Minutiae)
 step09 = _import_module("s09", os.path.join(BASE_DIR, "09_matching.py"))
 extract_features = step09.extract_features
 match_fingerprints_kdtree = step09.match_fingerprints_kdtree
@@ -73,8 +72,8 @@ def parse_filename(filename):
 def build_pairs():
     """
     Tạo danh sách cặp Genuine và Impostor.
-    Genuine: Real[person_X, finger_Y] vs Altered[person_X, finger_Y]
-    Impostor: Real[person_X, finger_Y] vs Altered[person_Z, finger_W] (Z != X)
+    Genuine: TOÀN BỘ cặp Real[person_X, finger_Y] vs Altered[person_X, finger_Y]
+    Impostor: Random cặp khác người, số lượng = số genuine (cân bằng thống kê)
     """
     print("Đang quét thư mục Real và Altered-Easy...")
 
@@ -83,16 +82,21 @@ def build_pairs():
     real_index = {}
     for fp in real_files:
         pid, _, hand, finger = parse_filename(os.path.basename(fp))
-        if pid and pid not in ABNORMAL_IDS:
+        if pid:
             real_index[(pid, f"{hand}_{finger}")] = fp
 
-    # Index ảnh Altered theo (person_id, finger_key) → lấy 1 biến thể (_CR)
-    altered_files = glob.glob(os.path.join(DATASET_ALTERED_DIR, "*_CR.BMP"))
+    # Index ảnh Altered theo (person_id, finger_key) → lấy TOÀN BỘ biến thể (CR, Obl, Zcut)
+    altered_files = glob.glob(os.path.join(DATASET_ALTERED_DIR, "*.BMP"))
     altered_index = {}
     for fp in altered_files:
         pid, _, hand, finger = parse_filename(os.path.basename(fp))
-        if pid and pid not in ABNORMAL_IDS:
+        if pid:
             altered_index[(pid, f"{hand}_{finger}")] = fp
+
+    # Lọc chỉ giữ user_id 1-50 (50 người đầu, mỗi người 10 ảnh)
+    MAX_USER_ID_EVAL = 50
+    real_index    = {k: v for k, v in real_index.items()    if int(k[0]) <= MAX_USER_ID_EVAL}
+    altered_index = {k: v for k, v in altered_index.items() if int(k[0]) <= MAX_USER_ID_EVAL}
 
     # Tìm giao giữa Real và Altered
     common_keys = list(set(real_index.keys()) & set(altered_index.keys()))
@@ -101,17 +105,17 @@ def build_pairs():
 
     print(f"  Tìm thấy {len(common_keys)} cặp Real↔Altered có chung (person, finger)")
 
-    # --- Genuine pairs ---
+    # --- Genuine pairs: lấy TẤT CẢ (không giới hạn) ---
     genuine_pairs = []
-    for key in common_keys[:NUM_GENUINE_PAIRS]:
+    for key in common_keys:
         genuine_pairs.append((real_index[key], altered_index[key], "genuine"))
 
-    # --- Impostor pairs ---
+    # --- Impostor pairs: số lượng = genuine, đảm bảo cân bằng thống kê ---
+    num_impostor_target = len(genuine_pairs)
     impostor_pairs = []
-    all_persons = list(set(k[0] for k in common_keys))
     count = 0
     attempts = 0
-    while count < NUM_IMPOSTOR_PAIRS and attempts < NUM_IMPOSTOR_PAIRS * 10:
+    while count < num_impostor_target and attempts < num_impostor_target * 10:
         attempts += 1
         k1 = random.choice(common_keys)
         k2 = random.choice(common_keys)
@@ -128,20 +132,30 @@ def build_pairs():
 # TÍNH SCORE CHO CÁC CẶP
 # ============================================================================
 def compute_scores(pairs, label):
-    """Trích xuất + so khớp từng cặp, trả về danh sách score."""
+    """Trích xuất Minutiae + so khớp KD-Tree với Level 1 Pre-filtering."""
     scores = []
     errors = 0
 
     for real_path, altered_path, _ in tqdm(pairs, desc=f"Matching {label}", unit="pair"):
         try:
-            m1, _, _ = extract_features(real_path)
-            m2, _, _ = extract_features(altered_path)
+            m1, l1_1, _ = extract_features(real_path)
+            m2, l1_2, _ = extract_features(altered_path)
 
             if m1 is None or m2 is None or len(m1) == 0 or len(m2) == 0:
                 errors += 1
                 continue
 
-            score, _, _, _ = match_fingerprints_kdtree(m1, m2, alpha_range=5)
+            # Áp dụng So khớp Phân tầng (Hierarchical Matching)
+            pat1 = l1_1["pattern_class"] if l1_1 else "Unknown"
+            pat2 = l1_2["pattern_class"] if l1_2 else "Unknown"
+
+            if pat1 != "Unknown" and pat2 != "Unknown" and pat1 != pat2:
+                # Trượt ngay ở Level 1 -> Kết luận Khác người (Score = 0)
+                score = 0.0
+            else:
+                # Vượt qua Level 1 -> Tiến hành so khớp Level 2 KD-Tree
+                score, _, _, _ = match_fingerprints_kdtree(m1, m2, alpha_range=5)
+
             scores.append(score)
         except Exception:
             errors += 1
@@ -275,8 +289,8 @@ def save_report(genuine_scores, impostor_scores, far, frr, thresholds, eer, eer_
 
         f.write("1. CẤU HÌNH ĐÁNH GIÁ\n")
         f.write(f"   Gallery     : Real images (SOCOFing)\n")
-        f.write(f"   Probe       : Altered-Easy (biến thể _CR)\n")
-        f.write(f"   Matching    : KD-Tree + Poincare alignment\n")
+        f.write(f"   Probe       : Altered-Easy (toàn bộ biến thể CR, Obl, Zcut)\n")
+        f.write(f"   Matching    : Minutiae KD-Tree + Level 1 Pre-filtering\n")
         f.write(f"   Genuine Pairs : {len(genuine_scores)}\n")
         f.write(f"   Impostor Pairs: {len(impostor_scores)}\n\n")
 

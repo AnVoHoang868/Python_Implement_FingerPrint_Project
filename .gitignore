@@ -15,14 +15,6 @@ env/
 *.db
 *.sqlite3
 
-# Output results and temporary images
-output/
-*.png
-*.jpg
-*.jpeg
-*.tif
-*.tiff
-
 # ============================================
 # DỮ LIỆU VÂN TAY (Dung lượng quá lớn)
 # ============================================

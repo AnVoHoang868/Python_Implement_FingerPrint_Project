@@ -2,21 +2,27 @@
 Bước 13: Đánh giá Hệ thống Nhận dạng (Identification 1:N)
 =========================================================
 Mục tiêu:
-  1. Lấy N ảnh truy vấn (Probe) bị biến dạng từ Altered-Easy.
+  1. Lấy N ảnh truy vấn (Probe) bị biến dạng từ Altered-Easy (50 người đầu).
   2. Với mỗi ảnh, tìm kiếm trong cơ sở dữ liệu (Gallery) để lấy danh sách xếp hạng.
-  3. Tính toán Rank-1 Accuracy (Tỷ lệ đúng top 1) và Rank-5 Accuracy.
-  4. Vẽ đường cong CMC (Cumulative Match Characteristic).
-  5. Xuất báo cáo đánh giá hệ thống 1:N.
+  3. Tính toán Top-1 / Top-5 Accuracy, Macro Precision, Macro Recall.
+  4. Xuất báo cáo đánh giá ra JSON, CSV, TXT.
+
+Workflow: Minutiae + KD-Tree + SQLite (Level 1 Pre-filtering)
 """
 
 import os
+import sys
 import re
 import glob
+import json
+import csv
 import time
-import random
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
+from sklearn.metrics import precision_score, recall_score, accuracy_score
+
+# Fix encoding cho Windows console (tiếng Việt)
+sys.stdout.reconfigure(encoding='utf-8')
 
 # ============================================================================
 # CẤU HÌNH
@@ -26,15 +32,11 @@ DATASET_ALTERED_DIR = os.path.join(BASE_DIR, "DataFingerPrint", "fingerPrint", "
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Số lượng ảnh truy vấn dùng để test
-NUM_PROBES = 100
-MAX_RANK_TO_PLOT = 10
-
-# Các ID có kích thước ảnh lỗi (bỏ qua)
-ABNORMAL_IDS = {"53", "226", "270", "297", "303", "349", "354", "361", "363", "376", "560", "585", "590"}
+# Giới hạn đánh giá trên 5 người đầu tiên (để test tốc độ)
+MAX_USER_ID_EVAL = 5
 
 # ============================================================================
-# IMPORT MODULE
+# IMPORT MODULE (Minutiae workflow)
 # ============================================================================
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -51,6 +53,7 @@ extract_features = step09.extract_features
 match_fingerprints_kdtree = step09.match_fingerprints_kdtree
 FingerprintDatabase = step10.FingerprintDatabase
 
+
 def parse_filename(filename):
     """Parse SOCOFing filename → person_id"""
     m = re.match(r"(\d+)__([MF])", filename)
@@ -58,49 +61,81 @@ def parse_filename(filename):
         return m.group(1)
     return None
 
+
 # ============================================================================
 # CHƯƠNG TRÌNH ĐÁNH GIÁ
 # ============================================================================
-def evaluate_retrieval(db, probe_files):
+def evaluate_system():
+    t_start = time.time()
+
+    # 1. Kết nối DB SQLite (Gallery)
+    DB_PATH = os.path.join(BASE_DIR, "fingerprint.db")
+    db = FingerprintDatabase(DB_PATH)
+    db.connect()
+
     all_templates = db.get_all_templates()
     if not all_templates:
         print("Lỗi: Cơ sở dữ liệu trống! Hãy chạy 11_search_system.py để enroll trước.")
-        return None
+        db.close()
+        return
 
-    # Tạo từ điển map template_id sang person_id (trong CSDL name lưu dạng 'Person_100')
+    # Map template_id → person_id (trong CSDL name lưu dạng 'Person_100')
     db_person_ids = {}
     for t in all_templates:
-        # name = "Person_100" -> extract "100"
         pid = t["name"].split("_")[1]
         db_person_ids[t["template_id"]] = pid
 
-    ranks_found = []
-    errors = 0
+    # 2. Chuẩn bị Probe Set: lấy tất cả ảnh của 5 người đầu (CR, Obl, Zcut)
+    all_altered_files = sorted(glob.glob(os.path.join(DATASET_ALTERED_DIR, "*.BMP")))
+    test_files = []
+    for fp in all_altered_files:
+        parts = os.path.basename(fp).split('__')
+        if len(parts) >= 2:
+            try:
+                if 1 <= int(parts[0]) <= MAX_USER_ID_EVAL:
+                    test_files.append(fp)
+            except ValueError:
+                pass
 
-    print(f"Đang đánh giá {len(probe_files)} ảnh truy vấn trên CSDL có {len(all_templates)} templates...")
-    
-    for probe_path in tqdm(probe_files, desc="Retrieval Testing"):
-        true_pid = parse_filename(os.path.basename(probe_path))
-        if not true_pid:
-            errors += 1
-            continue
+    print(f"Bắt đầu đánh giá trên {len(test_files)} ảnh (user_id 1-{MAX_USER_ID_EVAL}) từ Altered-Easy...")
+    print(f"Gallery: {len(all_templates)} templates trong CSDL SQLite")
+
+    y_true = []
+    y_pred_top1 = []
+    correct_top5_count = 0
+    total_queries = 0
+    results_details = []
+
+    for i, file_path in enumerate(tqdm(test_files, desc="Retrieval Testing")):
+        filename = os.path.basename(file_path)
+        true_id = filename.split('__')[0]
 
         try:
-            # 1. Trích xuất đặc trưng
-            query_minutiae, query_level1, _ = extract_features(probe_path)
-            if query_minutiae is None or len(query_minutiae) == 0:
-                errors += 1
-                continue
-            
-            query_pattern = query_level1["pattern_class"] if query_level1 else "Unknown"
+            # 1. Trích xuất đặc trưng Minutiae + Level 1
+            query_minutiae, query_level1, _ = extract_features(file_path)
 
-            # 2. Lọc Level 1
+            if query_minutiae is None or len(query_minutiae) == 0:
+                y_true.append(true_id)
+                y_pred_top1.append("Unknown")
+                total_queries += 1
+                results_details.append({
+                    "file_name": filename,
+                    "true_id": true_id,
+                    "pred_top1_id": "Unknown",
+                    "top_5_ids": [],
+                    "is_top1_correct": False,
+                    "is_top5_correct": False
+                })
+                continue
+
+            # 2. Level 1 Pre-filtering (lọc theo Pattern Class)
+            query_pattern = query_level1["pattern_class"] if query_level1 else "Unknown"
             if query_pattern != "Unknown":
                 filtered = [t for t in all_templates if t["pattern_class"] in (query_pattern, "Unknown")]
             else:
                 filtered = all_templates
 
-            # 3. Tính điểm (Matching)
+            # 3. So khớp Level 2 (Minutiae KD-Tree) trên tập đã lọc
             results = []
             for tmpl in filtered:
                 score, _, _, _ = match_fingerprints_kdtree(query_minutiae, tmpl["minutiae"], alpha_range=5)
@@ -110,137 +145,140 @@ def evaluate_retrieval(db, probe_files):
                     "score": score
                 })
 
-            # 4. Sắp xếp Ranking
+            # 4. Sắp xếp theo Score giảm dần, lấy Top 5
             results.sort(key=lambda x: x["score"], reverse=True)
+            top_k_results = [r["person_id"] for r in results[:5]]
 
-            # 5. Tìm hạng (rank) của kết quả đúng ĐẦU TIÊN
-            # (Vì 1 người có nhiều ngón trong DB, chỉ cần ngón của người đó lọt Top K là tính đúng)
-            hit_rank = -1
-            for rank, res in enumerate(results):
-                if res["person_id"] == true_pid:
-                    hit_rank = rank + 1 # Rank bắt đầu từ 1
-                    break
+            if not top_k_results:
+                y_true.append(true_id)
+                y_pred_top1.append("Unknown")
+                total_queries += 1
+                results_details.append({
+                    "file_name": filename,
+                    "true_id": true_id,
+                    "pred_top1_id": "Unknown",
+                    "top_5_ids": [],
+                    "is_top1_correct": False,
+                    "is_top5_correct": False
+                })
+                continue
+
+            pred_top1_id = top_k_results[0]
+            y_true.append(true_id)
+            y_pred_top1.append(pred_top1_id)
+
+            is_top1_correct = (str(pred_top1_id) == str(true_id))
+            is_top5_correct = (str(true_id) in [str(res) for res in top_k_results])
+
+            if is_top5_correct:
+                correct_top5_count += 1
+
+            total_queries += 1
+
+            results_details.append({
+                "file_name": filename,
+                "true_id": true_id,
+                "pred_top1_id": pred_top1_id,
+                "top_5_ids": top_k_results,
+                "is_top1_correct": is_top1_correct,
+                "is_top5_correct": is_top5_correct
+            })
+
+        except Exception as e:
+            y_true.append(true_id)
+            y_pred_top1.append("Unknown")
+            total_queries += 1
+            results_details.append({
+                "file_name": filename,
+                "true_id": true_id,
+                "pred_top1_id": "Unknown",
+                "top_5_ids": [],
+                "is_top1_correct": False,
+                "is_top5_correct": False
+            })
+
+    # Đóng kết nối database
+    db.close()
+
+    # 5. Tính toán các chỉ số
+    elapsed = time.time() - t_start
+    eval_labels = sorted(set(y_true))
+    acc_top1 = accuracy_score(y_true, y_pred_top1)
+    precision = precision_score(y_true, y_pred_top1, average='macro', labels=eval_labels, zero_division=0)
+    recall = recall_score(y_true, y_pred_top1, average='macro', labels=eval_labels, zero_division=0)
+    acc_top5 = correct_top5_count / total_queries if total_queries > 0 else 0
+    avg_time = elapsed / total_queries if total_queries > 0 else 0
+
+    metrics = {
+        "Total_Images": total_queries,
+        "Top-1_Accuracy": round(acc_top1, 4),
+        "Top-5_Accuracy": round(acc_top5, 4),
+        "Macro_Precision": round(precision, 4),
+        "Macro_Recall": round(recall, 4),
+        "Total_Time_Seconds": round(elapsed, 2),
+        "Avg_Time_Per_Query_ms": round(avg_time * 1000, 2)
+    }
+
+    print("\n=== KẾT QUẢ ĐÁNH GIÁ HỆ THỐNG (Minutiae + KD-Tree) ===")
+    print(f"Tổng số ảnh đánh giá: {total_queries}")
+    print(f"Top-1 Accuracy : {acc_top1:.4f}")
+    print(f"Top-5 Accuracy : {acc_top5:.4f}")
+    print(f"Macro Precision: {precision:.4f}")
+    print(f"Macro Recall   : {recall:.4f}")
+    print(f"Tổng thời gian : {elapsed:.1f}s")
+    print(f"TB mỗi query   : {avg_time*1000:.1f}ms")
+
+    # --- LƯU KẾT QUẢ ---
+    
+    # 1. Lưu dưới dạng JSON
+    json_path = os.path.join(OUTPUT_DIR, "13_evaluation_results.json")
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump({
+            "metrics": metrics,
+            "details": results_details
+        }, f, indent=4, ensure_ascii=False)
+        
+    # 2. Lưu dưới dạng CSV
+    csv_path = os.path.join(OUTPUT_DIR, "13_evaluation_results.csv")
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Metric", "Value"])
+        for k, v in metrics.items():
+            writer.writerow([k, v])
+        
+        writer.writerow([])
+        writer.writerow(["file_name", "true_id", "pred_top1_id", "top_5_ids", "is_top1_correct", "is_top5_correct"])
+        for item in results_details:
+            writer.writerow([
+                item["file_name"], 
+                item["true_id"], 
+                item["pred_top1_id"], 
+                ", ".join(map(str, item["top_5_ids"])), 
+                item["is_top1_correct"], 
+                item["is_top5_correct"]
+            ])
             
-            ranks_found.append(hit_rank)
-            
-        except Exception:
-            errors += 1
+    # 3. Lưu dưới dạng TXT
+    txt_path = os.path.join(OUTPUT_DIR, "13_evaluation_results.txt")
+    with open(txt_path, 'w', encoding='utf-8') as f:
+        f.write("=== KẾT QUẢ ĐÁNH GIÁ HỆ THỐNG (Minutiae + KD-Tree) ===\n")
+        f.write(f"Tổng số ảnh đánh giá: {total_queries}\n")
+        f.write(f"Top-1 Accuracy : {acc_top1:.4f}\n")
+        f.write(f"Top-5 Accuracy : {acc_top5:.4f}\n")
+        f.write(f"Macro Precision: {precision:.4f}\n")
+        f.write(f"Macro Recall   : {recall:.4f}\n")
+        f.write(f"Tổng thời gian : {elapsed:.1f}s\n")
+        f.write(f"TB mỗi query   : {avg_time*1000:.1f}ms\n")
+        f.write("\n=== CHI TIẾT ===\n")
+        for item in results_details:
+            top_5_str = ", ".join(map(str, item['top_5_ids']))
+            f.write(f"File: {item['file_name']} | True ID: {item['true_id']} | Top 1: {item['pred_top1_id']} | Top 5: [{top_5_str}] | Top-1 Đúng: {item['is_top1_correct']} | Top-5 Đúng: {item['is_top5_correct']}\n")
 
-    return ranks_found, errors
+    print(f"\nĐã lưu kết quả đánh giá vào thư mục: {OUTPUT_DIR}/")
+    print(f"  -> 13_evaluation_results.json")
+    print(f"  -> 13_evaluation_results.csv")
+    print(f"  -> 13_evaluation_results.txt")
 
-
-# ============================================================================
-# VẼ BIỂU ĐỒ & XUẤT BÁO CÁO
-# ============================================================================
-def generate_cmc_report(ranks_found, total_queries):
-    """Tính và vẽ biểu đồ Cumulative Match Characteristic (CMC)"""
-    
-    # Những trường hợp hit_rank = -1 (tức là lọc Level 1 sai làm mất luôn đáp án) coi như không tìm thấy (Rank vô cùng)
-    valid_ranks = [r for r in ranks_found if r > 0]
-    
-    cmc_curve = []
-    # Tính tỷ lệ nhận diện đúng trong Top K (từ K=1 đến MAX_RANK_TO_PLOT)
-    for k in range(1, MAX_RANK_TO_PLOT + 1):
-        hits = sum(1 for r in valid_ranks if r <= k)
-        cmc_curve.append(hits / total_queries)
-
-    rank1_acc = cmc_curve[0] * 100
-    rank5_acc = cmc_curve[4] * 100 if len(cmc_curve) >= 5 else 0
-
-    # In ra console
-    print("\n" + "="*40)
-    print(" KẾT QUẢ ĐÁNH GIÁ RETRIEVAL 1:N")
-    print("="*40)
-    print(f"Tổng số ảnh truy vấn : {total_queries}")
-    print(f"Rank-1 Accuracy      : {rank1_acc:.2f}% (Tỷ lệ tìm trúng đích ngay kết quả số 1)")
-    print(f"Rank-5 Accuracy      : {rank5_acc:.2f}% (Tỷ lệ chủ nhân nằm trong Top 5)")
-    print("="*40)
-
-    # Vẽ biểu đồ CMC
-    plt.figure(figsize=(8, 6))
-    ranks = list(range(1, MAX_RANK_TO_PLOT + 1))
-    plt.plot(ranks, [c * 100 for c in cmc_curve], marker='o', linestyle='-', color='b', linewidth=2, markersize=8)
-    
-    # Highlight Rank 1 và Rank 5
-    plt.plot(1, rank1_acc, 'ro', markersize=10, label=f'Rank-1: {rank1_acc:.1f}%')
-    if len(cmc_curve) >= 5:
-        plt.plot(5, rank5_acc, 'go', markersize=10, label=f'Rank-5: {rank5_acc:.1f}%')
-    
-    plt.title('Cumulative Match Characteristic (CMC) Curve', fontsize=14, fontweight='bold')
-    plt.xlabel('Rank', fontsize=12)
-    plt.ylabel('Identification Rate (%)', fontsize=12)
-    plt.xticks(ranks)
-    plt.ylim(0, 105)
-    plt.grid(True, linestyle='--', alpha=0.7)
-    plt.legend(fontsize=12)
-    
-    
-    # Lưu file đồ thị
-    save_path = os.path.join(OUTPUT_DIR, "13_cmc_curve.png")
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    print(f"Đã lưu biểu đồ: {save_path}")
-    plt.close()
-
-    # Xuất file báo cáo dạng text
-    report_path = os.path.join(OUTPUT_DIR, "13_retrieval_results.txt")
-    from datetime import datetime
-    with open(report_path, "w", encoding="utf-8") as f:
-        f.write("=" * 60 + "\n")
-        f.write("  FINGERPRINT SYSTEM - IDENTIFICATION REPORT (1:N)\n")
-        f.write(f"  Ngày: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-        f.write("=" * 60 + "\n\n")
-
-        f.write("1. CẤU HÌNH ĐÁNH GIÁ\n")
-        f.write(f"   Gallery     : Dữ liệu đã Enroll vào CSDL (Real)\n")
-        f.write(f"   Probe       : {total_queries} ảnh từ tập Altered-Easy\n")
-        f.write(f"   Matching    : KD-Tree + Poincare Level 1 Pre-filtering\n\n")
-
-        f.write("2. KẾT QUẢ RANKING (ĐỘ CHÍNH XÁC)\n")
-        f.write(f"   Rank-1 Accuracy : {rank1_acc:.2f}%\n")
-        f.write(f"   Rank-5 Accuracy : {rank5_acc:.2f}%\n\n")
-
-        f.write("3. CHI TIẾT ĐƯỜNG CONG CMC\n")
-        f.write(f"   {'Rank':<10} {'Accuracy (%)':<15}\n")
-        f.write(f"   {'-'*25}\n")
-        for k in range(1, MAX_RANK_TO_PLOT + 1):
-            if k-1 < len(cmc_curve):
-                f.write(f"   {k:<10} {cmc_curve[k-1]*100:<15.2f}\n")
-    print(f"Đã lưu báo cáo: {report_path}")
 
 if __name__ == "__main__":
-    # 1. Kết nối DB
-    DB_PATH = os.path.join(BASE_DIR, "fingerprint.db")
-    db = FingerprintDatabase(DB_PATH)
-    db.connect()
-
-    # 2. Chuẩn bị Probe Set
-    altered_files = glob.glob(os.path.join(DATASET_ALTERED_DIR, "*_CR.BMP"))
-    probe_list = []
-    
-    for fp in altered_files:
-        pid = parse_filename(os.path.basename(fp))
-        if pid and pid not in ABNORMAL_IDS:
-            probe_list.append(fp)
-
-    random.seed(42)
-    random.shuffle(probe_list)
-    probe_list = probe_list[:NUM_PROBES]  # Lấy 100 ảnh để test
-
-    if not probe_list:
-        print("Lỗi: Không tìm thấy ảnh Probe!")
-        exit()
-
-    # 3. Chạy đánh giá
-    t0 = time.time()
-    ranks_found, errors = evaluate_retrieval(db, probe_list)
-    t_total = time.time() - t0
-    
-    # 4. Xuất kết quả
-    total_queries = len(probe_list) - errors
-    if total_queries > 0:
-        generate_cmc_report(ranks_found, total_queries)
-        print(f"\nThời gian chạy: {t_total:.1f}s (Trung bình {t_total/total_queries:.1f}s / ảnh)")
-    else:
-        print("Đánh giá thất bại, không có truy vấn nào thành công.")
-    
-    db.close()
+    evaluate_system()

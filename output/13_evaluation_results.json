@@ -1,0 +1,2113 @@
+{
+    "metrics": {
+        "Total_Images": 150,
+        "Top-1_Accuracy": 0.0267,
+        "Top-5_Accuracy": 0.0667,
+        "Macro_Precision": 0.4,
+        "Macro_Recall": 0.0267,
+        "Total_Time_Seconds": 5683.69,
+        "Avg_Time_Per_Query_ms": 37891.24
+    },
+    "details": [
+        {
+            "file_name": "1__M_Left_index_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "288",
+            "top_5_ids": [
+                "288",
+                "105",
+                "358",
+                "234",
+                "245"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_index_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "369",
+            "top_5_ids": [
+                "369",
+                "205",
+                "372",
+                "147",
+                "225"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_index_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "108",
+            "top_5_ids": [
+                "108",
+                "341",
+                "233",
+                "242",
+                "132"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_little_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "141",
+            "top_5_ids": [
+                "141",
+                "217",
+                "177",
+                "279",
+                "30"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_little_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "127",
+            "top_5_ids": [
+                "127",
+                "264",
+                "109",
+                "215",
+                "225"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_little_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "30",
+            "top_5_ids": [
+                "30",
+                "27",
+                "318",
+                "341",
+                "274"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_middle_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "174",
+            "top_5_ids": [
+                "174",
+                "306",
+                "15",
+                "171",
+                "31"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_middle_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "127",
+            "top_5_ids": [
+                "127",
+                "331",
+                "129",
+                "271",
+                "332"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_middle_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "306",
+            "top_5_ids": [
+                "306",
+                "188",
+                "317",
+                "110",
+                "135"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_ring_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "165",
+            "top_5_ids": [
+                "165",
+                "221",
+                "228",
+                "267",
+                "281"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_ring_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "26",
+            "top_5_ids": [
+                "26",
+                "355",
+                "102",
+                "224",
+                "336"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_ring_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "244",
+            "top_5_ids": [
+                "244",
+                "108",
+                "172",
+                "268",
+                "2"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_thumb_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "101",
+                "101",
+                "101",
+                "113"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_thumb_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "330",
+            "top_5_ids": [
+                "330",
+                "165",
+                "220",
+                "248",
+                "301"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Left_thumb_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "352",
+            "top_5_ids": [
+                "352",
+                "159",
+                "101",
+                "219",
+                "239"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_index_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "244",
+            "top_5_ids": [
+                "244",
+                "29",
+                "290",
+                "19",
+                "1"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "1__M_Right_index_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "262",
+            "top_5_ids": [
+                "262",
+                "246",
+                "296",
+                "320",
+                "118"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_index_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "331",
+            "top_5_ids": [
+                "331",
+                "213",
+                "216",
+                "19",
+                "249"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_little_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_little_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "12",
+            "top_5_ids": [
+                "12",
+                "113",
+                "169",
+                "176",
+                "189"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_little_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_middle_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "110",
+            "top_5_ids": [
+                "110",
+                "129",
+                "177",
+                "199",
+                "218"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_middle_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "143",
+            "top_5_ids": [
+                "143",
+                "1",
+                "338",
+                "149",
+                "161"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "1__M_Right_middle_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "199",
+            "top_5_ids": [
+                "199",
+                "228",
+                "109",
+                "122",
+                "151"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_ring_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "106",
+            "top_5_ids": [
+                "106",
+                "168",
+                "168",
+                "228",
+                "296"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_ring_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "106",
+            "top_5_ids": [
+                "106",
+                "168",
+                "141",
+                "272",
+                "319"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_ring_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "142",
+            "top_5_ids": [
+                "142",
+                "234",
+                "138",
+                "159",
+                "106"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_thumb_finger_CR.BMP",
+            "true_id": "1",
+            "pred_top1_id": "180",
+            "top_5_ids": [
+                "180",
+                "101",
+                "125",
+                "144",
+                "178"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_thumb_finger_Obl.BMP",
+            "true_id": "1",
+            "pred_top1_id": "16",
+            "top_5_ids": [
+                "16",
+                "324",
+                "315",
+                "191",
+                "227"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "1__M_Right_thumb_finger_Zcut.BMP",
+            "true_id": "1",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "101",
+                "101",
+                "101",
+                "113"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_index_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "2",
+            "top_5_ids": [
+                "2",
+                "19",
+                "190",
+                "235",
+                "248"
+            ],
+            "is_top1_correct": true,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "2__F_Left_index_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "240",
+            "top_5_ids": [
+                "240",
+                "368",
+                "106",
+                "222",
+                "173"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_index_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "2",
+            "top_5_ids": [
+                "2",
+                "19",
+                "14",
+                "275",
+                "367"
+            ],
+            "is_top1_correct": true,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "2__F_Left_little_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "246",
+            "top_5_ids": [
+                "246",
+                "262",
+                "279",
+                "300",
+                "352"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_little_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "284",
+            "top_5_ids": [
+                "284",
+                "314",
+                "332",
+                "275",
+                "182"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_little_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_middle_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "235",
+            "top_5_ids": [
+                "235",
+                "247",
+                "146",
+                "357",
+                "377"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_middle_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "20",
+            "top_5_ids": [
+                "20",
+                "321",
+                "235",
+                "247",
+                "331"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_middle_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "247",
+            "top_5_ids": [
+                "247",
+                "18",
+                "235",
+                "146",
+                "234"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_ring_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "268",
+            "top_5_ids": [
+                "268",
+                "273",
+                "315",
+                "315",
+                "330"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_ring_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "166",
+            "top_5_ids": [
+                "166",
+                "228",
+                "274",
+                "357",
+                "134"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_ring_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "31",
+            "top_5_ids": [
+                "31",
+                "371",
+                "197",
+                "262",
+                "321"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_thumb_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "102",
+            "top_5_ids": [
+                "102",
+                "238",
+                "125",
+                "146",
+                "222"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_thumb_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "219",
+            "top_5_ids": [
+                "219",
+                "269",
+                "295",
+                "326",
+                "138"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Left_thumb_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "207",
+            "top_5_ids": [
+                "207",
+                "2",
+                "100",
+                "125",
+                "17"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "2__F_Right_index_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "240",
+            "top_5_ids": [
+                "240",
+                "162",
+                "311",
+                "158",
+                "118"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_index_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "271",
+            "top_5_ids": [
+                "271",
+                "358",
+                "122",
+                "163",
+                "274"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_index_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "141",
+            "top_5_ids": [
+                "141",
+                "358",
+                "158",
+                "31",
+                "118"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_little_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "15",
+            "top_5_ids": [
+                "15",
+                "196",
+                "208",
+                "24",
+                "255"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_little_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "245",
+            "top_5_ids": [
+                "245",
+                "224",
+                "107",
+                "166",
+                "170"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_little_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "114",
+            "top_5_ids": [
+                "114",
+                "163",
+                "185",
+                "239",
+                "24"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_middle_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "105",
+            "top_5_ids": [
+                "105",
+                "264",
+                "121",
+                "168",
+                "179"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_middle_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "219",
+            "top_5_ids": [
+                "219",
+                "221",
+                "127",
+                "203",
+                "244"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_middle_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "168",
+            "top_5_ids": [
+                "168",
+                "103",
+                "106",
+                "240",
+                "264"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_ring_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "271",
+            "top_5_ids": [
+                "271",
+                "285",
+                "328",
+                "134",
+                "140"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_ring_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "151",
+            "top_5_ids": [
+                "151",
+                "255",
+                "339",
+                "343",
+                "227"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_ring_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "289",
+            "top_5_ids": [
+                "289",
+                "328",
+                "134",
+                "101",
+                "119"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_thumb_finger_CR.BMP",
+            "true_id": "2",
+            "pred_top1_id": "15",
+            "top_5_ids": [
+                "15",
+                "171",
+                "121",
+                "127",
+                "138"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "2__F_Right_thumb_finger_Obl.BMP",
+            "true_id": "2",
+            "pred_top1_id": "233",
+            "top_5_ids": [
+                "233",
+                "285",
+                "2",
+                "1",
+                "192"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "2__F_Right_thumb_finger_Zcut.BMP",
+            "true_id": "2",
+            "pred_top1_id": "267",
+            "top_5_ids": [
+                "267",
+                "358",
+                "150",
+                "107",
+                "125"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_index_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "249",
+            "top_5_ids": [
+                "249",
+                "202",
+                "23",
+                "350",
+                "14"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_index_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_index_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "10",
+            "top_5_ids": [
+                "10",
+                "144",
+                "15",
+                "150",
+                "178"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_little_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "300",
+            "top_5_ids": [
+                "300",
+                "302",
+                "352",
+                "214",
+                "128"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_little_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "273",
+            "top_5_ids": [
+                "273",
+                "101",
+                "101",
+                "101",
+                "101"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_little_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "336",
+            "top_5_ids": [
+                "336",
+                "114",
+                "124",
+                "141",
+                "18"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_middle_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "10",
+            "top_5_ids": [
+                "10",
+                "111",
+                "364",
+                "117",
+                "15"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_middle_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "117",
+            "top_5_ids": [
+                "117",
+                "15",
+                "16",
+                "174",
+                "211"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_middle_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "3",
+            "top_5_ids": [
+                "3",
+                "240",
+                "181",
+                "220",
+                "228"
+            ],
+            "is_top1_correct": true,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "3__M_Left_ring_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "177",
+            "top_5_ids": [
+                "177",
+                "105",
+                "125",
+                "204",
+                "209"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_ring_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "207",
+            "top_5_ids": [
+                "207",
+                "233",
+                "302",
+                "342",
+                "178"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_ring_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "16",
+            "top_5_ids": [
+                "16",
+                "168",
+                "277",
+                "209",
+                "324"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_thumb_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "144",
+            "top_5_ids": [
+                "144",
+                "178",
+                "233",
+                "246",
+                "285"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_thumb_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "144",
+            "top_5_ids": [
+                "144",
+                "248",
+                "257",
+                "123",
+                "127"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Left_thumb_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "163",
+            "top_5_ids": [
+                "163",
+                "218",
+                "358",
+                "191",
+                "3"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "3__M_Right_index_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "182",
+            "top_5_ids": [
+                "182",
+                "106",
+                "152",
+                "220",
+                "222"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_index_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_index_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "210",
+            "top_5_ids": [
+                "210",
+                "301",
+                "367",
+                "231",
+                "265"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_little_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "224",
+            "top_5_ids": [
+                "224",
+                "130",
+                "147",
+                "320",
+                "334"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_little_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "309",
+            "top_5_ids": [
+                "309",
+                "114",
+                "154",
+                "207",
+                "301"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_little_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "10",
+            "top_5_ids": [
+                "10",
+                "288",
+                "32",
+                "348",
+                "364"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_middle_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "37",
+            "top_5_ids": [
+                "37",
+                "371",
+                "121",
+                "148",
+                "153"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_middle_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "103",
+            "top_5_ids": [
+                "103",
+                "139",
+                "171",
+                "238",
+                "27"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_middle_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "170",
+            "top_5_ids": [
+                "170",
+                "300",
+                "106",
+                "112",
+                "127"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_ring_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "212",
+            "top_5_ids": [
+                "212",
+                "3",
+                "211",
+                "237",
+                "357"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "3__M_Right_ring_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "137",
+            "top_5_ids": [
+                "137",
+                "243",
+                "32",
+                "122",
+                "29"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_ring_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "3",
+            "top_5_ids": [
+                "3",
+                "3",
+                "276",
+                "282",
+                "310"
+            ],
+            "is_top1_correct": true,
+            "is_top5_correct": true
+        },
+        {
+            "file_name": "3__M_Right_thumb_finger_CR.BMP",
+            "true_id": "3",
+            "pred_top1_id": "131",
+            "top_5_ids": [
+                "131",
+                "371",
+                "105",
+                "146",
+                "160"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_thumb_finger_Obl.BMP",
+            "true_id": "3",
+            "pred_top1_id": "105",
+            "top_5_ids": [
+                "105",
+                "157",
+                "23",
+                "230",
+                "238"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "3__M_Right_thumb_finger_Zcut.BMP",
+            "true_id": "3",
+            "pred_top1_id": "236",
+            "top_5_ids": [
+                "236",
+                "118",
+                "128",
+                "149",
+                "240"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_index_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "193",
+            "top_5_ids": [
+                "193",
+                "237",
+                "271",
+                "343",
+                "141"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_index_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "101",
+                "101",
+                "101",
+                "113"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_index_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "172",
+            "top_5_ids": [
+                "172",
+                "223",
+                "253",
+                "336",
+                "26"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_little_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "125",
+            "top_5_ids": [
+                "125",
+                "164",
+                "166",
+                "171",
+                "23"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_little_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "25",
+            "top_5_ids": [
+                "25",
+                "300",
+                "127",
+                "119",
+                "22"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_little_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "200",
+            "top_5_ids": [
+                "200",
+                "202",
+                "173",
+                "116",
+                "250"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_middle_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "218",
+            "top_5_ids": [
+                "218",
+                "331",
+                "204",
+                "206",
+                "286"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_middle_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "25",
+            "top_5_ids": [
+                "25",
+                "368",
+                "326",
+                "168",
+                "326"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_middle_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "100",
+            "top_5_ids": [
+                "100",
+                "173",
+                "125",
+                "133",
+                "144"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_ring_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "25",
+            "top_5_ids": [
+                "25",
+                "144",
+                "153",
+                "178",
+                "344"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_ring_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "348",
+            "top_5_ids": [
+                "348",
+                "124",
+                "182",
+                "232",
+                "319"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_ring_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "269",
+            "top_5_ids": [
+                "269",
+                "109",
+                "140",
+                "158",
+                "371"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_thumb_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "138",
+            "top_5_ids": [
+                "138",
+                "14",
+                "237",
+                "248",
+                "265"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_thumb_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "245",
+            "top_5_ids": [
+                "245",
+                "139",
+                "24",
+                "250",
+                "316"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Left_thumb_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "372",
+            "top_5_ids": [
+                "372",
+                "182",
+                "350",
+                "130",
+                "14"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_index_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "129",
+            "top_5_ids": [
+                "129",
+                "111",
+                "114",
+                "163",
+                "185"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_index_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "156",
+            "top_5_ids": [
+                "156",
+                "324",
+                "134",
+                "328",
+                "310"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_index_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "156",
+            "top_5_ids": [
+                "156",
+                "306",
+                "309",
+                "15",
+                "237"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_little_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "104",
+            "top_5_ids": [
+                "104",
+                "112",
+                "120",
+                "164",
+                "210"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_little_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "121",
+            "top_5_ids": [
+                "121",
+                "225",
+                "131",
+                "222",
+                "25"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_little_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "321",
+            "top_5_ids": [
+                "321",
+                "18",
+                "232",
+                "350",
+                "112"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_middle_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "101",
+                "101",
+                "101",
+                "113"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_middle_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "144",
+            "top_5_ids": [
+                "144",
+                "148",
+                "295",
+                "351",
+                "24"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_middle_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "163",
+            "top_5_ids": [
+                "163",
+                "300",
+                "290",
+                "176",
+                "188"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_ring_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "111",
+            "top_5_ids": [
+                "111",
+                "324",
+                "129",
+                "151",
+                "304"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_ring_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "212",
+            "top_5_ids": [
+                "212",
+                "218",
+                "311",
+                "343",
+                "211"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_ring_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "114",
+            "top_5_ids": [
+                "114",
+                "163",
+                "185",
+                "239",
+                "24"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_thumb_finger_CR.BMP",
+            "true_id": "4",
+            "pred_top1_id": "131",
+            "top_5_ids": [
+                "131",
+                "274",
+                "151",
+                "122",
+                "235"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_thumb_finger_Obl.BMP",
+            "true_id": "4",
+            "pred_top1_id": "101",
+            "top_5_ids": [
+                "101",
+                "114",
+                "117",
+                "120",
+                "122"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "4__M_Right_thumb_finger_Zcut.BMP",
+            "true_id": "4",
+            "pred_top1_id": "360",
+            "top_5_ids": [
+                "360",
+                "146",
+                "341",
+                "348",
+                "298"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_index_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "12",
+            "top_5_ids": [
+                "12",
+                "125",
+                "147",
+                "153",
+                "176"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_index_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "235",
+            "top_5_ids": [
+                "235",
+                "240",
+                "134",
+                "179",
+                "199"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_index_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "356",
+            "top_5_ids": [
+                "356",
+                "119",
+                "236",
+                "331",
+                "262"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_little_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "263",
+            "top_5_ids": [
+                "263",
+                "288",
+                "106",
+                "109",
+                "137"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_little_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "110",
+            "top_5_ids": [
+                "110",
+                "290",
+                "147",
+                "181",
+                "225"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_little_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "114",
+            "top_5_ids": [
+                "114",
+                "146",
+                "24",
+                "242",
+                "316"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_middle_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "216",
+            "top_5_ids": [
+                "216",
+                "350",
+                "265",
+                "16",
+                "199"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_middle_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "132",
+            "top_5_ids": [
+                "132",
+                "165",
+                "167",
+                "17",
+                "191"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_middle_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "357",
+            "top_5_ids": [
+                "357",
+                "16",
+                "27",
+                "277",
+                "31"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_ring_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "21",
+            "top_5_ids": [
+                "21",
+                "309",
+                "178",
+                "224",
+                "142"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_ring_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "206",
+            "top_5_ids": [
+                "206",
+                "34",
+                "182",
+                "194",
+                "206"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_ring_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "220",
+            "top_5_ids": [
+                "220",
+                "232",
+                "29",
+                "352",
+                "358"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_thumb_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "198",
+            "top_5_ids": [
+                "198",
+                "277",
+                "288",
+                "292",
+                "298"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_thumb_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "261",
+            "top_5_ids": [
+                "261",
+                "187",
+                "140",
+                "163",
+                "305"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Left_thumb_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "253",
+            "top_5_ids": [
+                "253",
+                "291",
+                "190",
+                "17",
+                "187"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_index_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "140",
+            "top_5_ids": [
+                "140",
+                "16",
+                "244",
+                "26",
+                "302"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_index_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "108",
+            "top_5_ids": [
+                "108",
+                "188",
+                "323",
+                "114",
+                "15"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_index_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "15",
+            "top_5_ids": [
+                "15",
+                "154",
+                "237",
+                "255",
+                "31"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_little_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "32",
+            "top_5_ids": [
+                "32",
+                "225",
+                "250",
+                "305",
+                "280"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_little_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "318",
+            "top_5_ids": [
+                "318",
+                "101",
+                "101",
+                "101",
+                "101"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_little_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "280",
+            "top_5_ids": [
+                "280",
+                "137",
+                "275",
+                "235",
+                "269"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_middle_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "205",
+            "top_5_ids": [
+                "205",
+                "245",
+                "279",
+                "309",
+                "33"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_middle_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "151",
+            "top_5_ids": [
+                "151",
+                "238",
+                "11",
+                "162",
+                "355"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_middle_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "236",
+            "top_5_ids": [
+                "236",
+                "353",
+                "118",
+                "162",
+                "219"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_ring_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "333",
+            "top_5_ids": [
+                "333",
+                "357",
+                "119",
+                "26",
+                "33"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_ring_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "170",
+            "top_5_ids": [
+                "170",
+                "206",
+                "228",
+                "267",
+                "358"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_ring_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "238",
+            "top_5_ids": [
+                "238",
+                "368",
+                "126",
+                "153",
+                "186"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_thumb_finger_CR.BMP",
+            "true_id": "5",
+            "pred_top1_id": "108",
+            "top_5_ids": [
+                "108",
+                "176",
+                "219",
+                "138",
+                "164"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_thumb_finger_Obl.BMP",
+            "true_id": "5",
+            "pred_top1_id": "12",
+            "top_5_ids": [
+                "12",
+                "132",
+                "160",
+                "236",
+                "286"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        },
+        {
+            "file_name": "5__M_Right_thumb_finger_Zcut.BMP",
+            "true_id": "5",
+            "pred_top1_id": "119",
+            "top_5_ids": [
+                "119",
+                "236",
+                "286",
+                "142",
+                "228"
+            ],
+            "is_top1_correct": false,
+            "is_top5_correct": false
+        }
+    ]
+}
