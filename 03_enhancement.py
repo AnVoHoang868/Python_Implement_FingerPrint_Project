@@ -1,21 +1,3 @@
-"""
-Bước 2: Enhancement (Tăng cường ảnh vân tay)
-=============================================
-Mục tiêu: Làm rõ các đường vân (ridge) và giảm nhiễu trước khi đưa vào
-           các bước xử lý tiếp theo (Orientation, Gabor, Thinning...).
-
-Tác giả gốc (MATLAB) dùng FFT Enhancement (fft_enhance_cubs.m) - rất phức tạp.
-Ở đây ta dùng các kỹ thuật tương đương trong OpenCV:
-  1. Histogram Equalization (Cân bằng histogram toàn cục)
-  2. CLAHE (Cân bằng histogram thích ứng cục bộ) ← Phương pháp chính
-  3. Kết hợp: Chuẩn hóa + Tách nền + CLAHE → Ảnh tăng cường hoàn chỉnh
-
-So sánh với tác giả gốc:
-  - fft_enhance_cubs.m: Chia ảnh thành block → FFT → bandpass filter → IFFT
-  - CLAHE: Chia ảnh thành block → cân bằng histogram cục bộ → nội suy ghép nối
-  → Cả hai đều xử lý CỤC BỘ (theo block), mục đích giống nhau: tăng độ tương 
-    phản cục bộ để đường vân rõ hơn ở mọi vùng trên ảnh.
-"""
 
 import cv2
 import numpy as np
@@ -74,55 +56,11 @@ def segment_fingerprint(img, block_size=16, threshold=0.1):
 # HÀM MỚI: ENHANCEMENT (Tăng cường ảnh)
 # ============================================================================
 def histogram_equalization(img):
-    """
-    Cân bằng Histogram TOÀN CỤC (Global Histogram Equalization).
-    
-    Nguyên lý:
-      - Kéo giãn histogram để các giá trị pixel phân bố đều trên dải 0-255.
-      - Giúp tăng độ tương phản tổng thể.
-    
-    Nhược điểm:
-      - Xử lý trên TOÀN BỘ ảnh → nếu nền quá sáng, nó sẽ kéo nền xuống
-        nhưng đồng thời cũng kéo luôn vùng vân tay → mất chi tiết cục bộ.
-      - Không phù hợp khi ảnh có vùng sáng/tối khác nhau nhiều.
-    """
-    return cv2.equalizeHist(img)
+     return cv2.equalizeHist(img)
 
 
 def clahe_enhancement(img, clip_limit=2.0, grid_size=(8, 8)):
-    """
-    CLAHE - Contrast Limited Adaptive Histogram Equalization.
-    (Cân bằng Histogram Thích Ứng Cục Bộ có Giới Hạn Tương Phản)
-    
-    Đây là phương pháp CHÍNH mà ta sử dụng thay cho FFT Enhancement của tác giả.
-    
-    Nguyên lý:
-      1. Chia ảnh thành các block nhỏ (tile), kích thước = grid_size
-         VD: (8,8) nghĩa là chia ảnh thành lưới 8x8 = 64 block
-      2. Với MỖI block, tính histogram riêng và cân bằng cục bộ
-         → Những vùng tối sẽ được làm sáng hơn, vùng sáng được giảm bớt
-      3. clip_limit: Giới hạn mức khuếch đại tương phản
-         - Nếu clip_limit QUÁ CAO → nhiễu sẽ bị khuếch đại theo
-         - Nếu clip_limit QUÁ THẤP → hiệu quả tăng cường kém
-         - Giá trị thường dùng: 2.0 - 3.0
-      4. Nội suy song tuyến (bilinear interpolation) giữa các block
-         → Tránh hiện tượng "đường viền nhân tạo" ở biên các block
-    
-    So sánh với FFT Enhancement (fft_enhance_cubs.m):
-      ┌──────────────────┬─────────────────────────────────┐
-      │      CLAHE       │     FFT Enhancement (MATLAB)    │
-      ├──────────────────┼─────────────────────────────────┤
-      │ Chia block       │ Chia block (BLKSZ=6,12,24)      │
-      │ Histogram cục bộ │ FFT cục bộ                      │
-      │ Clip limit       │ Bandpass filter (RMIN, RMAX)     │
-      │ Nội suy bilinear │ Overlap + spectral window       │
-      │ Đơn giản, nhanh  │ Phức tạp, chính xác hơn         │
-      └──────────────────┴─────────────────────────────────┘
-    
-    Tham số:
-      clip_limit: Giới hạn tương phản (mặc định = 2.0)
-      grid_size:  Kích thước lưới chia block (mặc định = (8,8))
-    """
+ 
     clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=grid_size)
     return clahe.apply(img)
 

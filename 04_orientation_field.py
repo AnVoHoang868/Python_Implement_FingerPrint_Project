@@ -1,42 +1,3 @@
-"""
-Bước 3: Orientation Field Estimation (Ước lượng Trường Hướng Vân)
-==================================================================
-Mục tiêu: Tại MỖI pixel trên ảnh vân tay, xác định GÓC NGHIÊNG của đường vân
-           đi qua pixel đó. Kết quả là một "bản đồ hướng" (Orientation Map).
-
-Tại sao cần Orientation Field?
-  → Bộ lọc Gabor (bước sau) cần biết chính xác góc nghiêng tại mỗi vùng
-    để "nối" các đường vân bị đứt và loại bỏ nhiễu theo đúng hướng vân.
-
-Thuật toán (giống ridgeorient.m của tác giả MATLAB):
-  ┌─────────────────────────────────────────────────────────────────────┐
-  │ 1. Tính Gradient (đạo hàm) theo 2 chiều X và Y bằng bộ lọc Sobel │
-  │    → Gx (gradient ngang), Gy (gradient dọc)                       │
-  │                                                                     │
-  │ 2. Tính ma trận Hiệp phương sai (Covariance) của gradient:        │
-  │    → Gxx = Gx²,  Gxy = Gx × Gy,  Gyy = Gy²                      │
-  │                                                                     │
-  │ 3. Làm mịn Covariance bằng bộ lọc Gaussian                       │
-  │    → Tổng hợp thông tin gradient từ các pixel lân cận              │
-  │                                                                     │
-  │ 4. Tính góc hướng: θ = π/2 + atan2(sin2θ, cos2θ) / 2             │
-  │    → sin2θ = Gxy / denom                                           │
-  │    → cos2θ = (Gxx - Gyy) / denom                                  │
-  │    → denom = √(Gxy² + (Gxx - Gyy)²)                               │
-  │                                                                     │
-  │ 5. Làm mịn góc hướng bằng Gaussian (smooth lần 2)                 │
-  │                                                                     │
-  │ 6. Tính Reliability (độ tin cậy): vùng nào có hướng rõ ràng        │
-  └─────────────────────────────────────────────────────────────────────┘
-
-Lý thuyết quan trọng - TẠI SAO GRADIENT VUÔNG GÓC VỚI ĐƯỜNG VÂN:
-  - Gradient luôn chỉ hướng thay đổi màu sắc MẠNH NHẤT
-  - Tại mép đường vân: pixel đen (vân) → pixel trắng (thung lũng)
-  - Sự thay đổi này xảy ra VUÔNG GÓC với đường vân
-  - Do đó: hướng vân = hướng gradient xoay thêm 90° (π/2)
-  - Công thức: θ_vân = θ_gradient + π/2
-"""
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -77,34 +38,6 @@ full_enhancement_pipeline = step03_enh.full_enhancement_pipeline
 # BƯỚC 3A: TÍNH GRADIENT BẰNG SOBEL
 # ============================================================================
 def compute_gradient(img, ksize=3):
-    """
-    Tính Gradient (đạo hàm) của ảnh theo 2 chiều X và Y.
-    
-    Sử dụng bộ lọc Sobel - tương đương với gradient of Gaussian trong MATLAB.
-    
-    Bộ lọc Sobel 3×3:
-        Gx (ngang):          Gy (dọc):
-        [-1  0  +1]          [-1  -2  -1]
-        [-2  0  +2]          [ 0   0   0]
-        [-1  0  +1]          [+1  +2  +1]
-    
-    Nguyên lý:
-      - Sobel quét qua ảnh, tại mỗi pixel nó tính:
-        * Gx = sự thay đổi pixel theo chiều NGANG (trái → phải)
-        * Gy = sự thay đổi pixel theo chiều DỌC (trên → dưới)
-      - Tại BIÊN đường vân (nơi pixel thay đổi đột ngột từ đen sang trắng):
-        → Gx hoặc Gy sẽ có giá trị LỚN
-      - Tại GIỮA đường vân hoặc GIỮA thung lũng (vùng pixel đồng đều):
-        → Gx và Gy ≈ 0 (không có sự thay đổi)
-    
-    Tham số:
-      img:   Ảnh grayscale (nên đã normalize/enhance)
-      ksize: Kích thước kernel Sobel (3, 5, 7...). Số lớn hơn = mịn hơn nhưng mất chi tiết.
-    
-    Returns:
-      Gx: Gradient theo X (float64)
-      Gy: Gradient theo Y (float64)
-    """
     # Chuyển sang float để tránh overflow (uint8 chỉ chứa 0-255)
     img_float = img.astype(np.float64)
 
@@ -120,62 +53,6 @@ def compute_gradient(img, ksize=3):
 # ============================================================================
 def estimate_orientation(img, gradient_sigma=1.0, block_sigma=3.0,
                          orient_smooth_sigma=3.0, sobel_ksize=3):
-    """
-    Ước lượng Trường Hướng Vân (Orientation Field).
-    
-    Đây là phiên bản Python tương đương với ridgeorient.m trong MATLAB.
-    Tham số mặc định: gradientsigma=1, blocksigma=3, orientsmoothsigma=3
-    (giống tác giả gốc gọi: ridgeorient(normim, 1, 3, 3))
-    
-    Thuật toán chi tiết:
-    
-    PHẦN 1 - GRADIENT:
-      Tính đạo hàm Gx, Gy bằng Sobel (thay cho Gaussian gradient trong MATLAB)
-    
-    PHẦN 2 - COVARIANCE (Ma trận hiệp phương sai):
-      Gxx = Gx²    → "Năng lượng" gradient theo X
-      Gxy = Gx×Gy  → "Tương quan" giữa gradient X và Y  
-      Gyy = Gy²    → "Năng lượng" gradient theo Y
-      
-      Tại sao cần bình phương?
-      → Gradient có thể dương (+) hoặc âm (-) tùy vào chiều đen→trắng hay trắng→đen.
-        Nếu cộng trực tiếp, gradient (+) và (-) triệt tiêu nhau → kết quả = 0.
-        Bình phương sẽ luôn dương → giữ được thông tin hướng.
-      
-      Tại sao cần Gxy?
-      → Gxy cho biết gradient nghiêng theo hướng nào. 
-        Nếu Gxy > 0: gradient nghiêng về phía 45° (↗)
-        Nếu Gxy < 0: gradient nghiêng về phía 135° (↘)
-    
-    PHẦN 3 - LÀM MỊN COVARIANCE:
-      Dùng Gaussian blur trên Gxx, Gxy, Gyy
-      → Tích hợp thông tin gradient từ VÙNG LÂN CẬN (không chỉ 1 pixel)
-      → Cho hướng ổn định hơn, giảm nhiễu
-    
-    PHẦN 4 - TÍNH GÓC:
-      sin(2θ) = Gxy / √(Gxy² + (Gxx-Gyy)²)
-      cos(2θ) = (Gxx-Gyy) / √(Gxy² + (Gxx-Gyy)²)
-      θ = π/2 + atan2(sin2θ, cos2θ) / 2
-      
-      Tại sao chia 2? → Vì ta tính trên góc gấp đôi (doubled angle) để loại bỏ
-        sự mơ hồ 180° (vân hướng 0° và 180° là CÙNG HỆ THỐNG vân)
-      
-      Tại sao cộng π/2? → Vì gradient VUÔNG GÓC với đường vân, cộng 90° để
-        chuyển từ hướng gradient → hướng vân
-    
-    PHẦN 5 - LÀM MỊN GÓC:
-      Làm mịn sin2θ và cos2θ (KHÔNG mịn θ trực tiếp vì θ có điểm nhảy 0↔π)
-      Rồi tính lại θ từ sin2θ, cos2θ đã mịn
-    
-    PHẦN 6 - ĐỘ TIN CẬY (Reliability):
-      reliability = 1 - Imin/Imax
-      → Nếu Imin ≈ Imax: gradient đều mọi hướng → KHÔNG CÓ hướng rõ ràng (nền, core)
-      → Nếu Imin << Imax: gradient tập trung 1 hướng → hướng vân RÕ RÀNG
-    
-    Returns:
-      orient_img:  Bản đồ hướng vân (radian, 0 đến π)
-      reliability: Bản đồ độ tin cậy (0 đến 1)
-    """
     img_float = img.astype(np.float64)
 
     # --- PHẦN 1: Tính Gradient ---
@@ -234,18 +111,6 @@ def estimate_orientation(img, gradient_sigma=1.0, block_sigma=3.0,
 # ============================================================================
 def visualize_orientation_field(img, orient_img, mask, block_size=16,
                                  scale=0.8, reliability=None, rel_threshold=0.3):
-    """
-    Vẽ Trường Hướng Vân dưới dạng các đường ngắn (line segments) trên ảnh.
-    
-    Mỗi block sẽ được biểu diễn bằng 1 đường thẳng ngắn cho thấy
-    hướng của đường vân tại vùng đó.
-    
-    Tham số:
-      block_size:    Kích thước mỗi block (pixel)
-      scale:         Độ dài đường vẽ (tỷ lệ so với block_size)
-      reliability:   Bản đồ reliability (nếu có, chỉ vẽ vùng tin cậy)
-      rel_threshold: Ngưỡng reliability tối thiểu để vẽ
-    """
     rows, cols = img.shape
     line_len = block_size * scale / 2
 

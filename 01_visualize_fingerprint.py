@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# Đường dẫn tới dataset FVC2002 (DB1_B)
-# Dùng thư mục của file script làm gốc để tránh lỗi không tìm thấy khi gọi từ ngoài thư mục
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(BASE_DIR, "..", "FVC2002", "DB1_B")
 SAMPLE_IMAGE = "101_1.tif"
@@ -17,8 +15,6 @@ def visualize_fingerprint():
         print("Hãy đảm bảo bạn đang chạy script này từ thư mục Python_Implementation")
         return
 
-    # 1. Đọc ảnh dưới dạng Grayscale (Đen trắng)
-    # Cờ cv2.IMREAD_GRAYSCALE cực kỳ quan trọng
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
 
     if img is None:
@@ -29,8 +25,7 @@ def visualize_fingerprint():
     print(f"Kích thước ảnh: {img.shape} (Cao x Rộng)")
     print(f"Kiểu dữ liệu: {img.dtype} (uint8 = 0-255)")
 
-    # 2. Vẽ biểu đồ Histogram (Phân bố độ sáng)
-    # Giúp chúng ta thấy rõ sự phân biệt giữa Nền (Trắng) và Vân (Đen)
+   
     plt.figure(figsize=(10, 5))
 
     # Hình 1: Ảnh gốc
